@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>技能系统演示 - 育德优培</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#FFD700;--cyan:#00D9FF;--green:#26de81;--red:#e74c3c;
+  --purple:#9b59b6;--blue:#4A90E2;--dark:#080812;--panel:#0e0e20;
+  --card:#12122a;--border:rgba(255,255,255,.08);
+}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:var(--dark);color:#fff;min-height:100vh;padding:20px}
+
+/* 技能中心样式 */
+.skill-center-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.skill-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.skill-header h2 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), #fd9644);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+/* 当前宠物技能展示 */
+.current-pet-skills {
+  background: linear-gradient(135deg, rgba(74,144,226,0.12), rgba(155,89,182,0.12));
+  border: 1px solid rgba(74,144,226,0.25);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.pet-skill-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.pet-skill-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  border: 3px solid rgba(74,144,226,0.5);
+  flex-shrink: 0;
+}
+
+/* 技能库 */
+.skill-library {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.skill-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  border: 2px solid var(--border);
+  transition: all .3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+/* 技能稀有度边框颜色 */
+.skill-card.rarity-0 { border-color: rgba(200,200,200,0.4); }
+.skill-card.rarity-1 { border-color: rgba(38,222,129,0.5); }
+.skill-card.rarity-2 { border-color: rgba(74,144,226,0.6); }
+.skill-card.rarity-3 { border-color: rgba(155,89,182,0.7); }
+.skill-card.rarity-4 { border-color: rgba(230,126,34,0.8); box-shadow: 0 0 15px rgba(230,126,34,0.2); }
+.skill-card.rarity-5 { border-color: rgba(255,215,0,0.9); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+.skill-card.rarity-6 { border-color: rgba(231,76,60,1); box-shadow: 0 0 25px rgba(231,76,60,0.4); }
+
+.skill-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.skill-card-icon {
+  font-size: 2rem;
+  min-width: 40px;
+  text-align: center;
+}
+
+.skill-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.skill-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.skill-card-type {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.skill-card-rarity {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.skill-card-desc {
+  font-size: 0.78rem;
+  opacity: 0.7;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.skill-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+}
+
+.skill-card-mp {
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.skill-card-power {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.skill-card-learn-btn {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all .2s;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+}
+
+.skill-card-learn-btn:hover {
+  transform: scale(1.03);
+}
+
+.skill-card-learn-btn.learned {
+  background: rgba(38,222,129,0.15);
+  color: var(--green);
+  cursor: default;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  margin: 5px;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<div class="skill-center-wrap">
+  <div class="skill-header">
+    <h2>✨ 技能中心演示</h2>
+    <p>这是一个技能系统的演示页面</p>
+  </div>
+  
+  <div class="current-pet-skills">
+    <div class="pet-skill-header">
+      <div class="pet-skill-avatar" id="skillPetAvatar">🐸</div>
+      <div>
+        <div style="font-size:1.2rem;font-weight:800" id="skillPetName">芽叶兽</div>
+        <div style="font-size:0.82rem;opacity:0.7;color:#00D9FF" id="skillPetMp">MP: 100/100</div>
+      </div>
+    </div>
+    <div style="margin-bottom:10px;font-weight:700;color:#FFD700">已学技能：</div>
+    <div id="petSkillsList" style="display:flex;flex-wrap:wrap;gap:8px;min-height:60px;padding:10px;background:rgba(255,255,255,0.05);border-radius:10px">
+      <div style="opacity:0.5;padding:20px;text-align:center;width:100%">还没有学习任何技能</div>
+    </div>
+  </div>
+  
+  <div style="font-weight:700;color:#FFD700;margin-bottom:15px">技能库（点击学习）：</div>
+  <div class="skill-library" id="skillLibrary"></div>
+</div>
+
+<script>
+// ============================================
+// 技能类型
+// ============================================
+var SKILL_TYPES = {
+    MAGIC: 'magic',
+    PHYSICAL: 'physical',
+    DEFEND: 'defend',
+    PASSIVE: 'passive'
+};
+
+// ============================================
+// 技能配置 - 简化版（每种类型每种颜色各1个技能做演示）
+// ============================================
+var SKILL_DATA = [
+  // 白色-普通 法术
+  { id: 'magic_w1', name: '火花', icon: '🔥', desc: '发射小型火球', type: 'magic', rarity: 0, mpCost: 5, power: 0.8 },
+  // 绿色-优秀 法术
+  { id: 'magic_g1', name: '烈焰', icon: '🔥', desc: '释放强烈火焰', type: 'magic', rarity: 1, mpCost: 12, power: 1.5 },
+  // 蓝色-稀有 法术
+  { id: 'magic_b1', name: '地狱烈焰', icon: '🌋', desc: '来自地狱的火焰', type: 'magic', rarity: 2, mpCost: 20, power: 2.5 },
+  // 紫色-史诗 法术
+  { id: 'magic_p1', name: '虚空脉冲', icon: '🌑', desc: '虚空能量脉冲', type: 'magic', rarity: 3, mpCost: 30, power: 3.5 },
+  // 橙色-传说 法术
+  { id: 'magic_o1', name: '星陨', icon: '☄️', desc: '星辰坠落之术', type: 'magic', rarity: 4, mpCost: 45, power: 5.0 },
+  // 金色-神话 法术
+  { id: 'magic_gold1', name: '神圣审判', icon: '✝️', desc: '神圣之光审判', type: 'magic', rarity: 5, mpCost: 60, power: 7.0 },
+  // 红色-终极 法术
+  { id: 'magic_r1', name: '万法归宗', icon: '🜂', desc: '万法归于本源', type: 'magic', rarity: 6, mpCost: 80, power: 10.0 },
+  
+  // 白色-普通 物理
+  { id: 'phys_w1', name: '投掷', icon: '🎯', desc: '精准投掷攻击', type: 'physical', rarity: 0, mpCost: 5, power: 0.8 },
+  // 绿色-优秀 物理
+  { id: 'phys_g1', name: '穿刺箭', icon: '🎯', desc: '穿透力强的箭', type: 'physical', rarity: 1, mpCost: 12, power: 1.5 },
+  
+  // 白色-普通 防御
+  { id: 'def_w1', name: '护盾', icon: '🛡️', desc: '生成基础护盾', type: 'defend', rarity: 0, mpCost: 5, power: 0.5 },
+  
+  // 白色-普通 被动
+  { id: 'pass_w1', name: '警觉', icon: '👁️', desc: '永久+5%闪避', type: 'passive', rarity: 0, mpCost: 0, power: 0 }
+];
+
+// 稀有度信息
+var RARITY_INFO = {
+    0: { name: '白色', color: '#CCCCCC', bgColor: 'rgba(200,200,200,0.15)' },
+    1: { name: '绿色', color: '#26de81', bgColor: 'rgba(38,222,129,0.15)' },
+    2: { name: '蓝色', color: '#4A90E2', bgColor: 'rgba(74,144,226,0.15)' },
+    3: { name: '紫色', color: '#9b59b6', bgColor: 'rgba(155,89,182,0.15)' },
+    4: { name: '橙色', color: '#e67e22', bgColor: 'rgba(230,126,34,0.15)' },
+    5: { name: '金色', color: '#FFD700', bgColor: 'rgba(255,215,0,0.15)' },
+    6: { name: '红色', color: '#e74c3c', bgColor: 'rgba(231,76,60,0.15)' }
+};
+
+// 类型信息
+var TYPE_NAMES = {
+    magic: { name: '法术', icon: '🔮' },
+    physical: { name: '物理', icon: '🏹' },
+    defend: { name: '防御', icon: '🛡️' },
+    passive: { name: '被动', icon: '✨' }
+};
+
+// ============================================
+// 宠物数据（演示用）
+// ============================================
+var demoPet = {
+    name: '芽叶兽',
+    icon: '🐸',
+    mp: 100,
+    maxMp: 100,
+    skills: []  // 已学技能ID列表
+};
+
+// ============================================
+// 渲染技能库
+// ============================================
+function renderSkillLibrary() {
+    var container = document.getElementById('skillLibrary');
+    if (!container) return;
+    
+    container.innerHTML = SKILL_DATA.map(function(skill) {
+        var rarityInfo = RARITY_INFO[skill.rarity] || RARITY_INFO[0];
+        var typeInfo = TYPE_NAMES[skill.type] || { name: '', icon: '' };
+        var isLearned = demoPet.skills.indexOf(skill.id) !== -1;
+        
+        return '<div class="skill-card rarity-' + skill.rarity + '">' +
+            '<div class="skill-card-header">' +
+                '<div class="skill-card-icon">' + skill.icon + '</div>' +
+                '<div class="skill-card-info">' +
+                    '<div class="skill-card-name">' + skill.name + '</div>' +
+                    '<div class="skill-card-type">' + typeInfo.icon + ' ' + typeInfo.name + '</div>' +
+                '</div>' +
+                '<div class="skill-card-rarity" style="background:' + rarityInfo.bgColor + ';color:' + rarityInfo.color + '">' + rarityInfo.name + '</div>' +
+            '</div>' +
+            '<div class="skill-card-desc">' + skill.desc + '</div>' +
+            '<div class="skill-card-footer">' +
+                (skill.type !== 'passive' ? '<span class="skill-card-mp">MP: ' + (skill.mpCost || 0) + '</span>' : '<span class="skill-card-mp">被动</span>') +
+                '<span class="skill-card-power">威力: ' + (skill.power || 0) + '</span>' +
+            '</div>' +
+            '<button class="skill-card-learn-btn ' + (isLearned ? 'learned' : '') + '" ' + 
+                (isLearned ? 'disabled' : '') + ' onclick="learnSkill(\'' + skill.id + '\')">' + 
+                (isLearned ? '✅ 已学习' : '📖 学习技能') + 
+            '</button>' +
+        '</div>';
+    }).join('');
+}
+
+// ============================================
+// 渲染已学技能
+// ============================================
+function renderPetSkills() {
+    var container = document.getElementById('petSkillsList');
+    if (!container) return;
+    
+    if (demoPet.skills.length === 0) {
+        container.innerHTML = '<div style="opacity:0.5;padding:20px;text-align:center;width:100%">还没有学习任何技能，去下方技能库学习吧！</div>';
+        return;
+    }
+    
+    container.innerHTML = demoPet.skills.map(function(skillId) {
+        var skill = null;
+        for (var i = 0; i < SKILL_DATA.length; i++) {
+            if (SKILL_DATA[i].id === skillId) { skill = SKILL_DATA[i]; break; }
+        }
+        if (!skill) return '';
+        
+        var rarityInfo = RARITY_INFO[skill.rarity] || RARITY_INFO[0];
+        return '<div style="background:rgba(255,255,255,0.08);border:1px solid ' + rarityInfo.color + ';border-radius:8px;padding:8px 12px;font-size:0.82rem;color:' + rarityInfo.color + '">' +
+            skill.icon + ' ' + skill.name + ' (' + rarityInfo.name + ')' +
+        '</div>';
+    }).join('');
+}
+
+// ============================================
+// 学习技能
+// ============================================
+function learnSkill(skillId) {
+    var skill = null;
+    for (var i = 0; i < SKILL_DATA.length; i++) {
+        if (SKILL_DATA[i].id === skillId) { skill = SKILL_DATA[i]; break; }
+    }
+    if (!skill) { alert('技能不存在！'); return; }
+    
+    // 检查是否已学习
+    if (demoPet.skills.indexOf(skillId) !== -1) {
+        alert('已经学习过这个技能了！');
+        return;
+    }
+    
+    // 检查MP是否足够（被动技能不消耗MP）
+    if (skill.type !== 'passive' && demoPet.mp < skill.mpCost) {
+        alert('MP不足！需要 ' + skill.mpCost + ' MP');
+        return;
+    }
+    
+    // 扣除MP（被动技能不消耗）
+    if (skill.type !== 'passive') {
+        demoPet.mp -= skill.mpCost;
+    }
+    
+    // 学习技能
+    demoPet.skills.push(skillId);
+    
+    // 更新UI
+    document.getElementById('skillPetMp').textContent = 'MP: ' + demoPet.mp + '/' + demoPet.maxMp;
+    renderPetSkills();
+    renderSkillLibrary();
+    
+    alert('✅ 成功学习技能【' + skill.name + '】！');
+}
+
+// ============================================
+// 初始化
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('[技能演示] 初始化...');
+    renderSkillLibrary();
+    renderPetSkills();
+    console.log('[技能演示] 初始化完成');
+});
+</script>
+
+</body>
+</html>
