@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>补充缺失的蛋蛋宠物图片</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 15px 30px; font-size: 16px; cursor: pointer; margin: 10px; }
+        #status { margin: 20px 0; font-size: 14px; color: #666; }
+        .info { background: #fff3cd; padding: 15px; border-radius: 8px; margin: 10px 0; }
+        .missing { background: #f8d7da; padding: 15px; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🪺 补充缺失的蛋蛋宠物图片</h1>
+    <div class="missing">
+        <p><strong>缺少的元素图片：</strong>光、暗、金、岩、星、风、机器</p>
+        <p>需要生成 7 元素 × 7 阶段 = 49 张图片</p>
+        <p>请确保浏览器下载保存到 <code>C:\Users\Administrator\Desktop\页游\eggy\</code> 文件夹</p>
+    </div>
+    <button onclick="generateAll()" id="genBtn">🎲 开始生成缺失图片</button>
+    <div id="status">等待中...</div>
+    <div id="log" style="max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;"></div>
+
+    <script>
+    // 缺失的7个元素
+    const elements = [
+        { display: "光", r: 255, g: 255, b: 100 },
+        { display: "暗", r: 50, g: 50, b: 80 },
+        { display: "金", r: 255, g: 215, b: 0 },
+        { display: "岩", r: 180, g: 140, b: 100 },
+        { display: "星", r: 255, g: 200, b: 255 },
+        { display: "风", r: 180, g: 220, b: 200 },
+        { display: "机器", r: 150, g: 150, b: 170 }
+    ];
+
+    function createPNGDataURL(width, height, r, g, b) {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        // 外圈 - 深色
+        ctx.beginPath();
+        ctx.arc(width/2, height/2, width/2 - 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${Math.floor(r*0.5)}, ${Math.floor(g*0.5)}, ${Math.floor(b*0.5)})`;
+        ctx.fill();
+        
+        // 中圈 - 主色
+        ctx.beginPath();
+        ctx.arc(width/2, height/2, width/2 - 4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${Math.floor(r*0.8)}, ${Math.floor(g*0.8)}, ${Math.floor(b*0.8)})`;
+        ctx.fill();
+        
+        // 内圈 - 亮色
+        ctx.beginPath();
+        ctx.arc(width/2, height/2, width/2 - 8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fill();
+        
+        // 高光
+        ctx.beginPath();
+        ctx.arc(width/3, height/3, width/8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 180)';
+        ctx.fill();
+        
+        return canvas.toDataURL('image/png');
+    }
+
+    async function downloadImage(dataUrl, filename) {
+        return new Promise((resolve) => {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(resolve, 80);
+        });
+    }
+
+    function log(msg) {
+        const logDiv = document.getElementById('log');
+        logDiv.innerHTML += msg + '<br>';
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    async function generateAll() {
+        const btn = document.getElementById('genBtn');
+        const status = document.getElementById('status');
+        btn.disabled = true;
+        
+        let count = 0;
+        const total = elements.length * 7;
+        
+        log(`<b>开始生成 ${total} 张缺失的图片...</b>`);
+        
+        for (const elem of elements) {
+            for (let stage = 1; stage <= 7; stage++) {
+                const filename = `${elem.display}${stage}.png`;
+                const dataUrl = createPNGDataURL(64, 64, elem.r, elem.g, elem.b);
+                await downloadImage(dataUrl, filename);
+                count++;
+                status.textContent = `进度: ${count}/${total} - ${filename}`;
+                log(`✓ ${filename}`);
+            }
+        }
+        
+        status.textContent = `✅ 完成! 共生成 ${count} 个图片文件`;
+        btn.disabled = false;
+        log(`<b>完成! 共生成 ${count} 个图片文件</b>`);
+        alert(`完成!\n共生成 ${count} 个图片文件\n请检查下载文件夹`);
+    }
+    </script>
+</body>
+</html>
