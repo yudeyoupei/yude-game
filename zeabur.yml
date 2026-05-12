@@ -1,0 +1,6 @@
+services:
+  - name: yude-game
+    type: web
+    root: server
+    buildCommand: npm install
+    startCommand: node server.js
