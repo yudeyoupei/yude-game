@@ -1,0 +1,319 @@
+/* ============================================
+   技能中心样式 - skill_styles.css
+   ============================================ */
+
+/* 技能中心容器 */
+.skill-center-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.skill-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.skill-header h2 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #FFD700, #fd9644);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.skill-header p {
+  font-size: 0.88rem;
+  opacity: 0.6;
+}
+
+/* 当前宠物技能展示 */
+.current-pet-skills {
+  background: linear-gradient(135deg, rgba(74,144,226,0.12), rgba(155,89,182,0.12));
+  border: 1px solid rgba(74,144,226,0.25);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.pet-skill-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.pet-skill-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  border: 3px solid rgba(74,144,226,0.5);
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 3px;
+}
+
+.pet-skill-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+}
+
+.pet-skill-info {
+  flex: 1;
+}
+
+.pet-skill-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.pet-skill-mp {
+  font-size: 0.82rem;
+  opacity: 0.7;
+  color: #00D9FF;
+}
+
+/* 技能列表 */
+.pet-skills-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.pet-skill-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 12px;
+  transition: all .25s;
+  cursor: pointer;
+}
+
+.pet-skill-card:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.pet-skill-card .skill-icon {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.pet-skill-card .skill-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.pet-skill-card .skill-desc {
+  font-size: 0.72rem;
+  opacity: 0.6;
+  line-height: 1.4;
+}
+
+.pet-skill-card .skill-rarity {
+  font-size: 0.68rem;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* 技能类型筛选 */
+.skill-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.skill-filter-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .25s;
+}
+
+.skill-filter-btn:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-1px);
+}
+
+.skill-filter-btn.active {
+  background: linear-gradient(135deg, #4A90E2, #9b59b6);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.3);
+}
+
+/* 技能库 */
+.skill-library {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.skill-card {
+  background: #12122a;
+  border-radius: 14px;
+  padding: 16px;
+  border: 2px solid rgba(255,255,255,0.08);
+  transition: all .3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+/* 技能稀有度边框颜色 */
+.skill-card.rarity-0 { border-color: rgba(200,200,200,0.4); }
+.skill-card.rarity-1 { border-color: rgba(38,222,129,0.5); }
+.skill-card.rarity-2 { border-color: rgba(74,144,226,0.6); }
+.skill-card.rarity-3 { border-color: rgba(155,89,182,0.7); }
+.skill-card.rarity-4 { border-color: rgba(230,126,34,0.8); box-shadow: 0 0 15px rgba(230,126,34,0.2); }
+.skill-card.rarity-5 { border-color: rgba(255,215,0,0.9); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+.skill-card.rarity-6 { border-color: rgba(231,76,60,1); box-shadow: 0 0 25px rgba(231,76,60,0.4); }
+
+.skill-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.skill-card-icon {
+  font-size: 2rem;
+  min-width: 40px;
+  text-align: center;
+}
+
+.skill-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.skill-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.skill-card-type {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.skill-card-rarity {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.skill-card-desc {
+  font-size: 0.78rem;
+  opacity: 0.7;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.skill-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+}
+
+.skill-card-mp {
+  color: #00D9FF;
+  font-weight: 600;
+}
+
+.skill-card-power {
+  color: #FFD700;
+  font-weight: 600;
+}
+
+.skill-card-learn-btn {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all .2s;
+  background: linear-gradient(135deg, #4A90E2, #9b59b6);
+  color: #fff;
+}
+
+.skill-card-learn-btn:hover {
+  transform: scale(1.03);
+}
+
+.skill-card-learn-btn.learned {
+  background: rgba(38,222,129,0.15);
+  color: #26de81;
+  cursor: default;
+}
+
+.skill-card-learn-btn.learned:hover {
+  transform: none;
+}
+
+/* 技能区域标题 */
+.pet-skills-section-title {
+  font-size: .92rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 技能网格（已学和技能书共用） */
+.pet-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+/* 技能书卡片悬停效果 */
+.skill-book-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.4);
+}
+
+/* 已学会的技能书（降低透明度） */
+.skill-book-card.already {
+  opacity: .75;
+}
+.skill-book-card.already:hover {
+  opacity: 1;
+}
+
