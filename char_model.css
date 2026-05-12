@@ -1,0 +1,289 @@
+/* 角色模型容器 */
+.char-model-container{
+  position:relative;
+  width:200px;
+  height:300px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+}
+
+/* 角色模型 */
+.char-model{
+  position:relative;
+  width:120px;
+  height:220px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* 角色头部 */
+.char-head{
+  position:relative;
+  width:60px;
+  height:60px;
+  background:linear-gradient(180deg, #ffcc99, #ffb366);
+  border-radius:50% 50% 45% 45%;
+  border:2px solid #cc8c00;
+  z-index:10;
+}
+
+/* 角色脸部 */
+.char-face{
+  position:absolute;
+  width:100%;
+  height:100%;
+}
+
+.char-eye{
+  position:absolute;
+  width:8px;
+  height:10px;
+  background:#333;
+  border-radius:50%;
+  top:35%;
+}
+
+.char-eye.left{ left:25%; }
+.char-eye.right{ right:25%; }
+
+.char-mouth{
+  position:absolute;
+  width:20px;
+  height:8px;
+  border-bottom:3px solid #cc6633;
+  border-radius:0 0 50% 50%;
+  bottom:20%;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+/* 头盔装备位 */
+.char-helmet{
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:70px;
+  height:40px;
+  z-index:11;
+}
+
+/* 角色身体 */
+.char-body{
+  position:relative;
+  width:80px;
+  height:70px;
+  background:linear-gradient(180deg, #6699cc, #336699);
+  border-radius:10px 10px 0 0;
+  margin-top:-10px;
+  z-index:9;
+  border:2px solid #224466;
+}
+
+/* 衣服装备位 */
+.char-clothes{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  border-radius:8px 8px 0 0;
+}
+
+/* 项链装备位 */
+.char-necklace{
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:30px;
+  height:20px;
+}
+
+/* 角色手臂 */
+.char-arm{
+  position:absolute;
+  width:25px;
+  height:60px;
+  top:70px;
+  z-index:8;
+}
+
+.char-arm.left{
+  left:-15px;
+  background:linear-gradient(180deg, #6699cc, #336699);
+  border-radius:0 0 8px 8px;
+  border:2px solid #224466;
+  border-top:none;
+}
+
+.char-arm.right{
+  right:-15px;
+  background:linear-gradient(180deg, #6699cc, #336699);
+  border-radius:0 0 8px 8px;
+  border:2px solid #224466;
+  border-top:none;
+}
+
+/* 武器装备位 */
+.char-weapon{
+  position:absolute;
+  top:-20px;
+  right:-40px;
+  width:40px;
+  height:100px;
+  z-index:12;
+}
+
+/* 盾牌装备位 */
+.char-shield{
+  position:absolute;
+  top:0;
+  left:-35px;
+  width:30px;
+  height:80px;
+  z-index:12;
+}
+
+/* 角色腿部 */
+.char-legs{
+  position:relative;
+  width:70px;
+  height:60px;
+  display:flex;
+  gap:5px;
+  z-index:7;
+}
+
+.char-leg{
+  flex:1;
+  background:linear-gradient(180deg, #4477aa, #224466);
+  border-radius:0 0 8px 8px;
+  border:2px solid #1a3355;
+  border-top:none;
+}
+
+/* 裤子装备位 */
+.char-pants{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:8;
+}
+
+/* 角色脚部 */
+.char-feet{
+  position:relative;
+  width:70px;
+  height:20px;
+  display:flex;
+  gap:5px;
+  z-index:6;
+}
+
+.char-foot{
+  flex:1;
+  background:linear-gradient(180deg, #8B4513, #654321);
+  border-radius:0 0 10px 10px;
+  border:2px solid #4a2a0a;
+  border-top:none;
+}
+
+/* 鞋子装备位 */
+.char-shoes{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:7;
+}
+
+/* 饰品 */
+.char-accessories{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  pointer-events:none;
+  z-index:13;
+}
+
+/* 戒指装备位 */
+.char-ring{
+  position:absolute;
+  bottom:80px;
+  right:-5px;
+  width:10px;
+  height:10px;
+}
+
+/* 耳环装备位 */
+.char-earring{
+  position:absolute;
+  top:55px;
+  left:-5px;
+  width:8px;
+  height:15px;
+}
+
+/* 手镯装备位 */
+.char-bracelet{
+  position:absolute;
+  bottom:100px;
+  left:-5px;
+  width:10px;
+  height:15px;
+}
+
+/* 装备光效 */
+.char-rarity-glow{
+  position:absolute;
+  top:-20px;
+  left:-20px;
+  right:-20px;
+  bottom:-20px;
+  border-radius:20px;
+  pointer-events:none;
+  z-index:0;
+  opacity:0;
+  transition:opacity .5s;
+}
+
+/* 角色装备信息 */
+.char-equip-info{
+  margin-top:15px;
+  padding:10px;
+  background:rgba(0,0,0,.5);
+  border-radius:10px;
+  width:100%;
+  text-align:center;
+  font-size:.75rem;
+  z-index:20;
+}
+
+.char-name{
+  font-size:.9rem;
+  font-weight:700;
+  margin-bottom:8px;
+  color:#FFD700;
+}
+
+.char-equip-list{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.char-equip-item{
+  padding:3px 8px;
+  background:rgba(255,255,255,.05);
+  border-radius:5px;
+  font-size:.7rem;
+}
