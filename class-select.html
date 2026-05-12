@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>选择班级 - 育德优培冒险乐园</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#FFD700;--cyan:#00D9FF;--green:#26de81;--red:#e74c3c;--purple:#9b59b6;--blue:#4A90E2;--dark:#080812;--panel:#0e0e20;--card:#12122a;--border:rgba(255,255,255,.08)}
+html,body{min-height:100vh}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:var(--dark);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;overflow:hidden}
+body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(74,144,226,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(155,89,182,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:480px;width:92vw}
+.logo{text-align:center;margin-bottom:30px}
+.logo h1{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,var(--gold),#fd9644);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo p{font-size:.82rem;opacity:.45;margin-top:4px}
+
+.box{background:var(--panel);border-radius:18px;padding:28px 24px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.4)}
+
+.info{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,.04);border-radius:12px;margin-bottom:20px;border:1px solid var(--border)}
+.info-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700}
+.info-name{font-size:.9rem;font-weight:600}
+.info-role{font-size:.75rem;opacity:.5}
+.logout{margin-left:auto;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.5);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:.78rem;transition:all .2s}
+.logout:hover{background:var(--red);color:#fff}
+
+.title{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--cyan)}
+.class-grid{display:grid;grid-template-columns:1fr;gap:10px}
+
+.cclass{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--card);border-radius:14px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.cclass:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.3);border-color:rgba(74,144,226,.3)}
+.cclass-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(74,144,226,.2),rgba(155,89,182,.2));display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.cclass-info{flex:1}
+.cclass-name{font-size:.95rem;font-weight:700}
+.cclass-meta{font-size:.75rem;opacity:.45;margin-top:4px}
+.cclass-arrow{font-size:1.2rem;opacity:.3}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+    <h1>🎮 育德优培冒险乐园</h1>
+    <p>选择你要管理的班级</p>
+  </div>
+  <div class="box">
+    <div class="info">
+      <div class="info-avatar" id="avatar">👤</div>
+      <div>
+        <div class="info-name" id="userName">加载中...</div>
+        <div class="info-role" id="userRole">教师</div>
+      </div>
+      <button class="logout" onclick="doLogout()">退出</button>
+    </div>
+
+    <div class="title">📚 我的班级</div>
+    <div class="class-grid" id="classList">
+      <div style="text-align:center;padding:30px;opacity:.5;font-size:.9rem">加载中...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = window.location.origin;
+
+// 检查登录状态
+const token = localStorage.getItem('yude_token');
+const userData = localStorage.getItem('yude_user');
+
+if (!token) {
+  window.location.href = '/login.html';
+}
+
+document.getElementById('userName').textContent = userData ? JSON.parse(userData).display_name : '未知用户';
+
+async function apiGet(path) {
+  const res = await fetch(API_BASE + path, {
+    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('yude_token') }
+  });
+  if (res.status === 401) {
+    localStorage.clear();
+    window.location.href = '/login.html';
+    return { ok: false };
+  }
+  return { ok: res.ok, data: await res.json() };
+}
+
+async function loadClasses() {
+  const result = await apiGet('/api/classes');
+
+  if (!result.ok) return;
+
+  const classes = result.data.classes;
+  const list = document.getElementById('classList');
+
+  if (classes.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:30px;opacity:.5">暂无班级，请联系管理员</div>';
+    return;
+  }
+
+  list.innerHTML = classes.map(c => `
+    <div class="cclass" onclick="enterClass(${c.id}, '${c.name.replace(/'/g, "\\'")}')">
+      <div class="cclass-icon">📚</div>
+      <div class="cclass-info">
+        <div class="cclass-name">${c.name}</div>
+        <div class="cclass-meta">${c.teacher_count || 1} 位老师 · ${c.has_data ? '已有数据' : '新班级'}</div>
+      </div>
+      <div class="cclass-arrow">→</div>
+    </div>
+  `).join('');
+
+  // 如果只有一个班级，直接进入
+  if (classes.length === 1) {
+    enterClass(classes[0].id, classes[0].name);
+  }
+}
+
+function enterClass(classId, className) {
+  localStorage.setItem('yude_current_class', JSON.stringify({ id: classId, name: className }));
+  window.location.href = '/index.html?class=' + classId;
+}
+
+function doLogout() {
+  if (confirm('确定要退出登录吗？')) {
+    localStorage.clear();
+    window.location.href = '/login.html';
+  }
+}
+
+loadClasses();
+</script>
+</body>
+</html>
