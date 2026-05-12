@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>生成蛋蛋宠物图片</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 15px 30px; font-size: 16px; cursor: pointer; margin: 10px; }
+        #status { margin: 20px 0; font-size: 14px; color: #666; }
+        .info { background: #f0f0f0; padding: 15px; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🪺 蛋蛋宠物图片生成器</h1>
+    <div class="info">
+        <p><strong>说明：</strong>点击下方按钮，将生成并下载 84 张蛋蛋宠物占位图片。</p>
+        <p>图片规格：12个元素（火、水、草、电、冰、格斗、毒、地面、飞行、精神、恶、龙）× 7个阶段（1-7）</p>
+        <p>保存位置：请确保浏览器下载到 <code>C:\Users\Administrator\Desktop\页游\eggy\</code> 文件夹</p>
+    </div>
+    <button onclick="generateAll()" id="genBtn">🎲 开始生成所有图片</button>
+    <div id="status">等待中...</div>
+    <div id="log" style="max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;"></div>
+
+    <script>
+    const elements = [
+        { display: "火", r: 255, g: 100, b: 80 },
+        { display: "水", r: 80, g: 150, b: 255 },
+        { display: "草", r: 100, g: 200, b: 100 },
+        { display: "电", r: 255, g: 240, b: 80 },
+        { display: "冰", r: 180, g: 230, b: 255 },
+        { display: "格斗", r: 220, g: 150, b: 100 },
+        { display: "毒", r: 180, g: 100, b: 255 },
+        { display: "地面", r: 200, g: 160, b: 100 },
+        { display: "飞行", r: 140, g: 190, b: 255 },
+        { display: "精神", r: 255, g: 120, b: 220 },
+        { display: "恶", r: 100, g: 100, b: 100 },
+        { display: "龙", r: 255, g: 180, b: 60 }
+    ];
+
+    function createPNGDataURL(width, height, r, g, b) {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        // 外圈 - 深色
+        ctx.beginPath();
+        ctx.arc(width/2, height/2, width/2 - 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${Math.floor(r*0.5)}, ${Math.floor(g*0.5)}, ${Math.floor(b*0.5)})`;
+        ctx.fill();
+        
+        // 中圈 - 主色
+        ctx.beginPath();
+        ctx.arc(width/2, height/2, width/2 - 4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${Math.floor(r*0.8)}, ${Math.floor(g*0.8)}, ${Math.floor(b*0.8)})`;
+        ctx.fill();
+        
+        // 内圈 - 亮色
+        ctx.beginPath();
+        ctx.arc(width/2, height/2, width/2 - 8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fill();
+        
+        // 高光
+        ctx.beginPath();
+        ctx.arc(width/3, height/3, width/8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 180)';
+        ctx.fill();
+        
+        return canvas.toDataURL('image/png');
+    }
+
+    async function downloadImage(dataUrl, filename) {
+        return new Promise((resolve) => {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(resolve, 80);
+        });
+    }
+
+    function log(msg) {
+        const logDiv = document.getElementById('log');
+        logDiv.innerHTML += msg + '<br>';
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    async function generateAll() {
+        const btn = document.getElementById('genBtn');
+        const status = document.getElementById('status');
+        btn.disabled = true;
+        
+        let count = 0;
+        const total = elements.length * 7;
+        
+        log(`<b>开始生成 ${total} 张图片...</b>`);
+        
+        for (const elem of elements) {
+            for (let stage = 1; stage <= 7; stage++) {
+                const filename = `${elem.display}${stage}.png`;
+                const dataUrl = createPNGDataURL(64, 64, elem.r, elem.g, elem.b);
+                await downloadImage(dataUrl, filename);
+                count++;
+                status.textContent = `进度: ${count}/${total} - ${filename}`;
+                log(`✓ ${filename}`);
+            }
+        }
+        
+        status.textContent = `✅ 完成! 共生成 ${count} 个图片文件`;
+        btn.disabled = false;
+        log(`<b>完成! 共生成 ${count} 个图片文件</b>`);
+        alert(`完成!\n共生成 ${count} 个图片文件\n请检查下载文件夹: C:\\Users\\Administrator\\Desktop\\页游\\eggy\\`);
+    }
+    </script>
+</body>
+</html>
