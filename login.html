@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>育德优培冒险乐园 - 登录</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#FFD700;--cyan:#00D9FF;--green:#26de81;--red:#e74c3c;--purple:#9b59b6;--blue:#4A90E2;--dark:#080812;--panel:#0e0e20;--card:#12122a;--border:rgba(255,255,255,.08)}
+html,body{min-height:100vh}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:var(--dark);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;overflow:hidden}
+body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(74,144,226,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(155,89,182,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+.login-wrap{position:relative;z-index:1;width:380px;max-width:92vw}
+.logo{text-align:center;margin-bottom:30px}
+.logo h1{font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,var(--gold),#fd9644);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo p{font-size:.85rem;opacity:.45;margin-top:6px}
+
+.box{background:var(--panel);border-radius:18px;padding:32px 28px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.tabs{display:flex;gap:6px;margin-bottom:24px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:600;background:rgba(255,255,255,.04);border:1px solid var(--border);transition:all .2s}
+.tab:hover{background:rgba(255,255,255,.08)}
+.tab.active{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;box-shadow:0 4px 15px rgba(74,144,226,.3)}
+.form{display:none;animation:fu .3s ease}
+.form.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.fg{margin-bottom:16px}
+.fl{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;opacity:.7}
+.fi{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;font-size:.9rem;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,144,226,.15)}
+.fi::placeholder{color:rgba(255,255,255,.25)}
+
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;transition:all .2s;margin-top:6px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(74,144,226,.3)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.msg{padding:10px 14px;border-radius:10px;font-size:.82rem;margin-bottom:14px;display:none}
+.msg.error{display:block;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);color:var(--red)}
+.msg.success{display:block;background:rgba(38,222,129,.12);border:1px solid rgba(38,222,129,.25);color:var(--green)}
+
+.hint{text-align:center;font-size:.78rem;opacity:.35;margin-top:16px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="logo">
+    <h1>🎮 育德优培冒险乐园</h1>
+    <p>托管班积分管理系统</p>
+  </div>
+  <div class="box">
+    <div class="tabs">
+      <div class="tab active" data-tab="login" onclick="switchTab('login')">登录</div>
+      <div class="tab" data-tab="register" onclick="switchTab('register')">注册</div>
+    </div>
+
+    <div id="msgBox" class="msg"></div>
+
+    <!-- 登录 -->
+    <div id="formLogin" class="form active">
+      <div class="fg">
+        <label class="fl">用户名</label>
+        <input class="fi" type="text" id="loginUser" placeholder="输入用户名" autocomplete="username">
+      </div>
+      <div class="fg">
+        <label class="fl">密码</label>
+        <input class="fi" type="password" id="loginPass" placeholder="输入密码" autocomplete="current-password">
+      </div>
+      <button class="btn" onclick="doLogin()">登 录</button>
+      <div class="hint">没有账号？点击上方的「注册」</div>
+    </div>
+
+    <!-- 注册 -->
+    <div id="formRegister" class="form">
+      <div class="fg">
+        <label class="fl">用户名</label>
+        <input class="fi" type="text" id="regUser" placeholder="2-20个字符" autocomplete="off">
+      </div>
+      <div class="fg">
+        <label class="fl">密码</label>
+        <input class="fi" type="password" id="regPass" placeholder="不少于6位" autocomplete="new-password">
+      </div>
+      <div class="fg">
+        <label class="fl">姓名（选填）</label>
+        <input class="fi" type="text" id="regName" placeholder="输入你的真实姓名">
+      </div>
+      <div class="fg">
+        <label class="fl">邀请码</label>
+        <input class="fi" type="text" id="regCode" placeholder="向机构管理员获取邀请码">
+      </div>
+      <button class="btn" onclick="doRegister()">注 册</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// API 基础路径
+const API_BASE = window.location.origin;
+
+function showMsg(text, type) {
+  const box = document.getElementById('msgBox');
+  box.textContent = text;
+  box.className = 'msg ' + type;
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('formLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('formRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('msgBox').className = 'msg';
+}
+
+async function apiPost(path, data) {
+  const res = await fetch(API_BASE + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return { ok: res.ok, data: await res.json() };
+}
+
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value.trim();
+
+  if (!username || !password) {
+    showMsg('请填写用户名和密码', 'error');
+    return;
+  }
+
+  const btn = document.querySelector('#formLogin .btn');
+  btn.disabled = true;
+  btn.textContent = '登录中...';
+
+  const result = await apiPost('/api/auth/login', { username, password });
+  btn.disabled = false;
+  btn.textContent = '登 录';
+
+  if (!result.ok) {
+    showMsg(result.data.error || '登录失败', 'error');
+    return;
+  }
+
+  // 保存 token 和用户信息
+  localStorage.setItem('yude_token', result.data.token);
+  localStorage.setItem('yude_user', JSON.stringify(result.data.user));
+  localStorage.setItem('yude_classes', JSON.stringify(result.data.classes));
+
+  // 跳转到班级选择
+  if (result.data.classes.length === 1) {
+    window.location.href = '/index.html?class=' + result.data.classes[0].id;
+  } else {
+    window.location.href = '/class-select.html';
+  }
+}
+
+async function doRegister() {
+  const username = document.getElementById('regUser').value.trim();
+  const password = document.getElementById('regPass').value.trim();
+  const displayName = document.getElementById('regName').value.trim();
+  const inviteCode = document.getElementById('regCode').value.trim();
+
+  if (!username || !password || !inviteCode) {
+    showMsg('请填写用户名、密码和邀请码', 'error');
+    return;
+  }
+
+  const btn = document.querySelector('#formRegister .btn');
+  btn.disabled = true;
+  btn.textContent = '注册中...';
+
+  const result = await apiPost('/api/auth/register', { username, password, inviteCode, displayName });
+  btn.disabled = false;
+  btn.textContent = '注 册';
+
+  if (!result.ok) {
+    showMsg(result.data.error || '注册失败', 'error');
+    return;
+  }
+
+  showMsg('注册成功！正在跳转...', 'success');
+
+  localStorage.setItem('yude_token', result.data.token);
+  localStorage.setItem('yude_user', JSON.stringify(result.data.user));
+  localStorage.setItem('yude_classes', JSON.stringify([result.data.class]));
+
+  setTimeout(() => {
+    window.location.href = '/index.html?class=' + result.data.class.id;
+  }, 800);
+}
+
+// 回车键触发
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const loginTab = document.querySelector('#formLogin.active');
+    const regTab = document.querySelector('#formRegister.active');
+    if (loginTab) doLogin();
+    else if (regTab) doRegister();
+  }
+});
+</script>
+</body>
+</html>
